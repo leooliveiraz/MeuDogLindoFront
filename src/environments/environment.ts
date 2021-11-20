@@ -6,7 +6,8 @@ export const environment = {
   production: false,
   API_URL: 'http://localhost:8081/',
   APP_URL: 'http://localhost:4200/',
-  GOOGLE_ID: '831677366245-kst0gbnp03n8912pnv5bdqms1gk8giim.apps.googleusercontent.com'
+  GOOGLE_ID: '831677366245-kst0gbnp03n8912pnv5bdqms1gk8giim.apps.googleusercontent.com',
+  VAPID_PUBLIC_KEY: 'BJMHKo3ZNFnFRu57Y5AzSSwLbGtV6tqr6mcBug9K_AX-NP_-ShXwHfWiJA96GMd2f4e0c-HwEUR08tCE7cfXw-4'
 };
 
 /*

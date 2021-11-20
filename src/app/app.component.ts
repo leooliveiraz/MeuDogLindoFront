@@ -6,7 +6,6 @@ import { AuthorizationService } from './service/auth.service';
 import { SwUpdate, SwPush, } from '@angular/service-worker';
 import { OnlineOfflineService } from './service/online-offline.service';
 import { MzToastService } from 'ngx-materialize';
-import { filter } from 'rxjs/operators';
 
 import { AppService } from './service/app.service';
 import { SeoService } from './service/seo.service';
@@ -41,7 +40,11 @@ export class AppComponent implements OnInit {
         } else {
           this.toastService.show('Sem conexão com a internet no momento.', 1000, 'red');
       }
-      
+
+      swPush.messages.subscribe(msg => {
+        console.log(JSON.stringify(msg));
+      })
+
     });
 
     this.router.events.subscribe((event: Event) => {
@@ -55,14 +58,13 @@ export class AppComponent implements OnInit {
         })
       }
     });
-    
+
   }
 
   ngOnInit() {
     this.reloadCache();
-    this.subscribeToNotifications();
     this.sincronizacaoService.iniciarBD();
-    this.sincronizacaoService.syncPull();
+    this.inscreverNotificacoes();
   }
 
   sincronizar(){
@@ -81,17 +83,15 @@ export class AppComponent implements OnInit {
     }
   }
 
-  subscribeToNotifications() {
-    if (this.swPush.isEnabled) {
-      this.swPush.requestSubscription({
-        serverPublicKey: 'BDx9spiF2Yfn6h7QSpMEeu43O_Scs70dTLNE_g3G6teYFZ1fcN4KwTrRiRFyzpSBVMWnKOTKpJEcIqEsZakxlok'
-      })
-      .then(sub => {
-        this.appService.inscrever(sub).subscribe(res => {
-          console.log(res)
-        });
-      })
-      .catch(err => console.error('Could not subscribe to notifications', err));
-    }
+  inscreverNotificacoes() {
+    const vapid  = environment.VAPID_PUBLIC_KEY;
+    this.swPush.requestSubscription({
+      serverPublicKey: vapid,
+    })
+    .then(sub => {
+      this.appService.inscrever(sub).subscribe(res => {
+      });
+    })
+    .catch(err => console.error('Não é possível realizar a inscrição de notificações', err))
   }
 }
